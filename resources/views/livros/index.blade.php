@@ -13,6 +13,7 @@
         <thead>
             <tr>
                 <th>Título</th><th>Autor</th><th>Editora</th><th>Ano</th><th>Ações</th>
+                <th>Capa</th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,14 @@
                 <td>{{ $livro->autor }}</td>
                 <td>{{ $livro->editora }}</td>
                 <td>{{ $livro->ano }}</td>
+                <td>
+                    @if($livro->imagem)
+                        <img src="{{ asset('storage/' . $livro->imagem) }}" width="50">
+                    @else
+                        Sem imagem
+                    @endif
+                </td>
+
                 <td>
                     <a href="{{ route('livros.edit', $livro) }}" class="btn btn-sm btn-warning">Editar</a>
                     <form action="{{ route('livros.destroy', $livro) }}" method="POST" class="d-inline">

@@ -27,11 +27,18 @@ class LivroController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        Livro::create($request->all());
-        return redirect()->route('livros.index')->with('success', 'Livro cadastrado');
+   public function store(Request $request)
+{
+    $data = $request->all();
+
+    if ($request->hasFile('imagem')) {
+        $data['imagem'] = $request->file('imagem')->store('livros', 'public');
     }
+
+    Livro::create($data);
+    return redirect()->route('livros.index')->with('success', 'Livro cadastrado!');
+}
+
 
     /**
      * Display the specified resource.
@@ -53,10 +60,22 @@ class LivroController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Livro $livro)
-    {
-        $livro->update($request->all());
-        return redirect()->route('livros.index')->with('success', 'Livro Atualizado com sucesso');
+{
+    $data = $request->all();
+
+    if ($request->hasFile('imagem')) {
+        // Opcional: deletar imagem anterior
+        if ($livro->imagem && \Storage::disk('public')->exists($livro->imagem)) {
+            \Storage::disk('public')->delete($livro->imagem);
+        }
+
+        $data['imagem'] = $request->file('imagem')->store('livros', 'public');
     }
+
+    $livro->update($data);
+    return redirect()->route('livros.index')->with('success', 'Livro atualizado!');
+}
+
 
     /**
      * Remove the specified resource from storage.
